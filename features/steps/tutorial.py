@@ -24,7 +24,8 @@ def step_impl(context):
     # Skicka tangenttryck/text till sökfältet
     # Skicka <enterslag>
 
-@given('I put "{thing}" in a blender')
+
+@given('I put {thing} in a blender')
 def step_impl(context, thing):
     context.blender = Blender()
     context.blender.add(thing)
@@ -35,17 +36,23 @@ def step_impl(context):
     context.blender.switch_on()
 
 
-# @then('it should transform into "apple juice"')
-# def step_impl(context):
-#    assert context.blender.result == "apple juice"
-
-
-# @given('I put "oranges" in a blender')
-# def step_impl(context):
-#    context.blender = Blender()
-#    context.blender.add("oranges")
-
-
-@then('it should transform into "{resulting_thing}"')
+@then('it should transform into {resulting_thing}')
 def step_impl(context, resulting_thing):
     assert context.blender.result == resulting_thing, f"Expected {resulting_thing} got {context.blender.result}"
+
+
+@given("I am on the todo page")
+def step_impl(context):
+    context.browser.get("https://lambdatest.github.io/sample-todo-app/")
+
+@when("I click done on all todos")
+def step_impl(context):
+    for element in context.browser.find_elements(By.XPATH, "//ul/li"):
+        element.find_element(By.XPATH, "input").click()
+
+
+@then(u'Remaining todos should be 0')
+def step_impl(context):
+    remaining_text = context.browser.find_element(By.CSS_SELECTOR, ".ng-binding").text
+    remaining = int(remaining_text.split()[0]) # remaining text looks like 0 of 5 remaining, get the first number as int
+    assert remaining == 0, f"'{remaining}' remain todos, expected 0"

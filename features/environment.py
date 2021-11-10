@@ -10,5 +10,5 @@ def selenium_browser_chrome(context) -> webdriver.Chrome:
     context.browser.quit()
 
 
-#def before_all(context):
-#    use_fixture(selenium_browser_chrome, context)
+def before_all(context):
+    use_fixture(selenium_browser_chrome, context)

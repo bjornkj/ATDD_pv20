@@ -1,10 +1,15 @@
 Feature: showing off behave
-    Scenario: Blend apple
-      Given I put "apples" in a blender
+    Scenario Outline: Blend apple
+      Given I put <thing> in a blender
       When I switch the blender on
-      Then it should transform into "apple juice"
+      Then it should transform into <resulting thing>
 
-    Scenario: Blend orange
-      Given I put "oranges" in a blender
-      When I switch the blender on
-      Then it should transform into "orange juice"
+    Examples: Thing to mix
+      | thing   | resulting thing |
+      | oranges | orange juice    |
+      | apples  | apple juice     |
+
+      Scenario: Mark all todos done
+        Given I am on the todo page
+        When I click done on all todos
+        Then Remaining todos should be 0
