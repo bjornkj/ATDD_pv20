@@ -17,14 +17,14 @@ class TestAPI(BaseAPI):
 
 
 class TestPlayer(Player):
-    ans: int
+    ans: list[int]
     last_message: str
 
     def __init__(self):
-        self.ans = 1
+        self.ans = []
 
     def ask_num(self, n) -> int:
-        return self.ans
+        return self.ans.pop(0)
 
     def send_message(self, message: str):
         self.last_message = message
@@ -53,9 +53,14 @@ def step_impl(context):
     context.question.answers.append(context.answer)
 
 
+# When The user answers 1 -> step_impl(context, "1")
+# When The user answers 2 -> step_impl(context, "2")
+# When The user answers Hej -> step_impl(context, "Hej")
+# When The user answers 2,1 -> step_impl(context, "2,1")
+
 @when('The user answers {ans}')
 def step_impl(context, ans):
-    context.quiz_player.ans = int(ans)
+    context.quiz_player.ans = list(map(int, ans.split(',')))
 
 
 @when('The program is run')

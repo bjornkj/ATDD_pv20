@@ -1,4 +1,7 @@
+import json
+
 import requests
+
 QUIZ_URL = "https://bjornkjellgren.se/quiz/v2/questions"
 
 
@@ -47,6 +50,31 @@ class BaseAPI:
         raise NotImplementedError
 
 
+class BjornsFakeAPI(BaseAPI):
+    def get_questions(self) -> list[Question]:
+        return [Question(1, "En enkel fråga", 1, 2, [Answer("Ett rätt svar", True),
+                                                     Answer("Också rätt", True)])]
+
+
+class BjornsFileAPI(BaseAPI):
+    def get_questions(self) -> list[Question]:
+        with open("questions.json") as f:
+            questions = json.load(f)['questions']
+            return [self._parse_question(q) for q in questions]
+
+    def post_answer(self, question: Question, correct: bool):
+        raise NotImplementedError
+
+    def _parse_answer(self, a) -> Answer:
+        return Answer(a['answer'], a['correct'])
+
+    def _parse_answers(self, answers) -> list[Answer]:
+        return [self._parse_answer(a) for a in answers]
+
+    def _parse_question(self, q) -> Question:
+        return Question(q['id'], q['prompt'], q['times_asked'], q['times_correct'], self._parse_answers(q['answers']))
+
+
 class QuizAPI(BaseAPI):
     url: str
 
@@ -71,7 +99,8 @@ class QuizAPI(BaseAPI):
 
 
 class Player:
-    def ask_num(self, n) -> int:
+    @staticmethod
+    def ask_num(n) -> int:
         raise NotImplementedError
 
     @staticmethod
@@ -80,7 +109,8 @@ class Player:
 
 
 class ConsolePlayer(Player):
-    def ask_num(self, n) -> int:
+    @staticmethod
+    def ask_num(n) -> int:
         while True:
             try:
                 res = int(input(">"))
@@ -123,8 +153,12 @@ class QuizGame:
         self.player.send_message(f"You answered {self.questions_correct} of {self.questions_asked} correct!")
 
 
+
+
 if __name__ == '__main__':
     q_api = QuizAPI(QUIZ_URL)
+    # q_api = BjornsFakeAPI()
+    # q_api = BjornsFileAPI()
     p = ConsolePlayer()
     quiz = QuizGame(q_api, p)
     quiz.run()
