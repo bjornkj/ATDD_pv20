@@ -48,6 +48,7 @@ def step_impl(context):
 @when("I click done on all todos")
 def step_impl(context):
     for element in context.browser.find_elements(By.XPATH, "//ul/li"):
+        time.sleep(1)
         element.find_element(By.XPATH, "input").click()
 
 
