@@ -111,7 +111,7 @@ class QuizGame:
             self.player.send_message(question.prompt)
             self.player.send_message(f"{question.percent_correct()} användare svarade rätt på frågan")
             for i, answer in enumerate(question.answers, start=1):
-                self.player.send_message(f"[{i}] {answer}, {answer.correct}")
+                self.player.send_message(f"[{i}] {answer}")
             self.questions_asked += 1
             user_answer = self.player.ask_num(question.num_answers)
             if question.answers[user_answer - 1].correct:
