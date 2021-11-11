@@ -19,6 +19,8 @@ def before_scenario(context, scenario):
         use_fixture(selenium_browser_chrome, context)
 
 
+
+
 # Hooks, vi definierar funktioner, verktyget kör dom vid rätt tillfälle om dom finns
 # before_feature(context, feature) körs innan varje feature
 # before_scenario(context, scenario)

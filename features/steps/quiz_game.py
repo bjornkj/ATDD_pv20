@@ -29,7 +29,10 @@ class Question:
         self.answers = answers
 
     def percent_correct(self) -> str:
-        return f"{self.times_correct / self.times_asked:.0%}"
+        if self.times_asked == 0:
+            return "No answers yet"
+        else:
+            return f"{self.times_correct / self.times_asked:.0%}"
 
     @property
     def num_answers(self):
@@ -68,12 +71,16 @@ class QuizAPI(BaseAPI):
 
 
 class Player:
-    def ask_num(self, n):
+    def ask_num(self, n) -> int:
+        raise NotImplementedError
+
+    @staticmethod
+    def send_message(message: str):
         raise NotImplementedError
 
 
 class ConsolePlayer(Player):
-    def ask_num(self, n):
+    def ask_num(self, n) -> int:
         while True:
             try:
                 res = int(input(">"))
@@ -81,6 +88,10 @@ class ConsolePlayer(Player):
                     return res
             except ValueError:
                 pass
+
+    @staticmethod
+    def send_message(message: str):
+        print(message)
 
 
 class QuizGame:
@@ -97,17 +108,17 @@ class QuizGame:
 
     def run(self):
         for question in self.quiz_api.get_questions():
-            print(question.prompt)
-            print(f"{question.percent_correct()} användare svarade rätt på frågan")
+            self.player.send_message(question.prompt)
+            self.player.send_message(f"{question.percent_correct()} användare svarade rätt på frågan")
             for i, answer in enumerate(question.answers, start=1):
-                print(f"[{i}] {answer}")
+                self.player.send_message(f"[{i}] {answer}")
             self.questions_asked += 1
             user_answer = self.player.ask_num(question.num_answers)
             if question.answers[user_answer - 1].correct:
-                print("Correct!")
+                self.player.send_message("Correct!")
                 self.questions_correct += 1
-            print("-" * 80)
-        print(f"You answered {self.questions_correct} of {self.questions_asked} correct!")
+            self.player.send_message("-" * 80)
+        self.player.send_message(f"You answered {self.questions_correct} of {self.questions_asked} correct!")
 
 
 if __name__ == '__main__':

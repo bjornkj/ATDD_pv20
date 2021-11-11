@@ -17,3 +17,4 @@ class Blender:
             self.result = "apple juice"
         elif self.thing == "oranges":
             self.result = "orange juice"
+        self.thing = ""
