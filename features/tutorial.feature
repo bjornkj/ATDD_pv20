@@ -58,3 +58,23 @@ Feature: showing off behave
       When The user answers 2
       And The program is run
       Then The result should be You answered 0 of 1 correct!
+
+
+    @quiz
+    Scenario: 5. Två frågor, svara rätt på en
+      Given A quiz program
+      And question with
+        | prompt                                          | times_asked | times_correct | answer | correct |
+        | Vad är meningen med livet universum och allting | 2           | 1             |        |         |
+        |                                                 |             |               | 42     | True    |
+        |                                                 |             |               | 12     | False   |
+        |                                                 |             |               | 99     | False   |
+      And question with
+        | prompt                                                           | times_asked | times_correct | answer     | correct |
+        | Vilken funktion använder vi för att skriva ut saker i terminalen | 10          | 9             |            |         |
+        |                                                                  |             |               | print()    | True    |
+        |                                                                  |             |               | input(">") | False   |
+        |                                                                  |             |               | len        | False   |
+      When The user answers 2,1
+      And The program is run
+      Then The result should be You answered 1 of 2 correct!
